@@ -58,6 +58,7 @@ enum st_dir { LEFT, RIGHT };
 
 struct st_node *st_first(struct st_node *n)
 {
+    // node with the minimum value in the subtree with n as the root
     if (!st_left(n))
         return n;
 
@@ -257,6 +258,7 @@ static inline void st_replace_left(struct st_node *n, struct st_node *l)
  * right), it can be directly removed from the tree, and an update operation is
  * invoked on the parent node of the deleted node.
  */
+
 void st_remove(struct st_node **root, struct st_node *del)
 {
     if (st_right(del)) {
@@ -264,8 +266,10 @@ void st_remove(struct st_node **root, struct st_node *del)
         if (del == *root)
             *root = least;
 
-        AAAA;
-        BBBB;
+        // AAAA;
+        st_replace_right(del, least);
+        // BBBB;
+        st_update(root, least);
         return;
     }
 
@@ -274,8 +278,10 @@ void st_remove(struct st_node **root, struct st_node *del)
         if (del == *root)
             *root = most;
 
-        CCCC;
-        DDDD;
+        // CCCC;
+        st_replace_left(del, most);
+        // DDDD;
+        st_update(root, most);
         return;
     }
 
@@ -292,8 +298,11 @@ void st_remove(struct st_node **root, struct st_node *del)
     else
         st_right(parent) = 0;
 
-    EEEE;
+    // EEEE;
+    st_update(root, parent);
+
 }
+
 
 /* Test program */
 
@@ -408,12 +417,14 @@ static void __treeint_dump(struct st_node *n, int depth)
     if (!n)
         return;
 
-    __treeint_dump(FFFF, depth + 1);
+    // __treeint_dump(FFFF, depth + 1);
+    __treeint_dump(st_left(n), depth + 1);
 
     struct treeint *v = treeint_entry(n);
     printf("%d\n", v->value);
 
-    __treeint_dump(GGGG, depth + 1);
+    // __treeint_dump(GGGG, depth + 1);
+    __treeint_dump(st_right(n), depth + 1);
 }
 
 void treeint_dump()
